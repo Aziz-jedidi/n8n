@@ -27,11 +27,12 @@ ENV CHROME_BIN=/usr/lib/chromium/chromium
 ENV CHROMEDRIVER_PATH=/usr/lib/chromium/chromedriver
 
 # Set up Python virtual environment and install Selenium
-RUN python3 -m ensurepip && \
-    pip3 install --no-cache --upgrade pip setuptools wheel && \
-    python3 -m venv /opt/venv
-
+RUN python3 -m venv /opt/venv && \
+    /opt/venv/bin/pip install --upgrade pip && \
+    /opt/venv/bin/pip install selenium
+    
 ENV PATH="/opt/venv/bin:$PATH"
+
 
 # Install Selenium only
 RUN pip install --no-cache-dir selenium
