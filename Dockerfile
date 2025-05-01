@@ -1,44 +1,25 @@
-FROM n8nio/n8n
+FROM n8nio/n8n:latest
 
-# Switch to root to install packages
 USER root
 
-# Install Python, Chromium, and required dependencies
-RUN apk add --no-cache \
-    python3 \
-    py3-pip \
-    chromium \
-    chromium-chromedriver \
-    build-base \
-    python3-dev \
-    libffi-dev \
-    openssl-dev \
-    cargo \
-    musl-dev \
-    g++ \
-    pkgconfig \
-    wget \
-    unzip \
-    udev \
-    ttf-freefont
+# Install dependencies
+RUN apk update && \
+    apk add --no-cache \
+        python3 \
+        py3-pip \
+        chromium \
+        chromium-chromedriver \
+        bash
 
-# Set environment variables for Selenium
-ENV CHROME_BIN=/usr/lib/chromium/chromium
-ENV CHROMEDRIVER_PATH=/usr/lib/chromium/chromedriver
-
-# Set up Python virtual environment and install Selenium
+# Create virtual environment & install Selenium
 RUN python3 -m venv /opt/venv && \
-    /opt/venv/bin/pip install --upgrade pip && \
-    /opt/venv/bin/pip install selenium
-    
+    . /opt/venv/bin/activate && \
+    pip install --upgrade pip && \
+    pip install selenium
+
+# Make virtualenv available system-wide
 ENV PATH="/opt/venv/bin:$PATH"
+ENV CHROME_BIN=/usr/bin/chromium-browser
+ENV CHROMEDRIVER_BIN=/usr/bin/chromedriver
 
-
-# Install Selenium only
-RUN pip install --no-cache-dir selenium
-
-# Switch back to n8n user
 USER node
-
-# Start n8n
-CMD ["n8n"]
