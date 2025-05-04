@@ -2,24 +2,45 @@ FROM n8nio/n8n:latest
 
 USER root
 
-# Install dependencies
+# Install system dependencies
 RUN apk update && \
     apk add --no-cache \
         python3 \
         py3-pip \
         chromium \
         chromium-chromedriver \
-        bash
+        bash \
+        curl \
+        git \
+        libffi \
+        libffi-dev \
+        gcc \
+        musl-dev \
+        libstdc++ \
+        jpeg-dev \
+        zlib-dev \
+        libxml2-dev \
+        libxslt-dev \
+        libcurl \
+        libressl \
+        libressl-dev \
+        build-base
 
-# Create virtual environment & install Selenium
+# Create a virtual environment and install Python dependencies
 RUN python3 -m venv /opt/venv && \
     . /opt/venv/bin/activate && \
     pip install --upgrade pip && \
-    pip install selenium
+    pip install \
+        selenium \
+        requests
 
-# Make virtualenv available system-wide
+# Set environment variables for Chrome and chromedriver
 ENV PATH="/opt/venv/bin:$PATH"
 ENV CHROME_BIN=/usr/bin/chromium-browser
 ENV CHROMEDRIVER_BIN=/usr/bin/chromedriver
+
+# Allow n8n user to use Chromium
+RUN mkdir -p /home/node/.cache && \
+    chown -R node:node /home/node/.cache
 
 USER node
