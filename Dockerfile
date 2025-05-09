@@ -34,10 +34,15 @@ RUN python3 -m venv /opt/venv && \
         selenium \
         requests
 
+# Install Node.js selenium-webdriver for use in Code node
+RUN npm install --prefix /data selenium-webdriver
+
 # Set environment variables for Chrome and chromedriver
 ENV PATH="/opt/venv/bin:$PATH"
 ENV CHROME_BIN=/usr/bin/chromium-browser
 ENV CHROMEDRIVER_BIN=/usr/bin/chromedriver
+ENV NODE_FUNCTION_ALLOW_EXTERNAL=selenium-webdriver
+ENV NODE_PATH=/data/node_modules
 
 # Allow n8n user to use Chromium
 RUN mkdir -p /home/node/.cache && \
