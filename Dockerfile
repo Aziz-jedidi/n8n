@@ -26,12 +26,13 @@ RUN apk update && \
         libressl-dev \
         build-base
 
-# Install Node.js dependencies globally
-RUN npm install -g selenium-webdriver axios
+# Install selenium-webdriver globally
+RUN npm install -g selenium-webdriver
 
-# Required by n8n for code node module access
+# Install axios inside n8n's scope
+RUN cd /usr/local/lib/node_modules/n8n && npm install axios
+
+# Tell n8n Code node where to find modules
 ENV NODE_PATH=/usr/local/lib/node_modules
-ENV NODE_FUNCTION_ALLOW_BUILTIN=fs,path
-ENV NODE_FUNCTION_ALLOW_EXTERNAL=axios,selenium-webdriver
 
 USER node
