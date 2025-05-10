@@ -26,9 +26,12 @@ RUN apk update && \
         libressl-dev \
         build-base
 
+# Install Node.js dependencies globally
+RUN npm install -g selenium-webdriver axios
 
-# Install Node.js selenium-webdriver for use in Code node
-RUN npm install -g selenium-webdriver
+# Required by n8n for code node module access
 ENV NODE_PATH=/usr/local/lib/node_modules
+ENV NODE_FUNCTION_ALLOW_BUILTIN=fs,path
+ENV NODE_FUNCTION_ALLOW_EXTERNAL=axios,selenium-webdriver
 
 USER node
